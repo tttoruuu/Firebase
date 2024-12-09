@@ -84,9 +84,11 @@ def app():
         email = st.text_input("メールアドレス")
         password = st.text_input("パスワード", type="password")
         if st.button("ログイン"):
-            if login_user(email):
-                st.experimental_rerun()  # ページを再読み込みしてログイン状態を反映
-
+            login_user(email):
+            if success:
+                st.session_state["user"] = {"email": email, "uid": auth.get_user_by_email(email).uid}
+                st.sidebar.success(f"ログイン中: {email}")
+                user_dashboard() 
 # アプリの起動
 if __name__ == "__main__":
     app()
