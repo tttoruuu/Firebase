@@ -83,8 +83,9 @@ def app():
         st.subheader("ログイン")
         email = st.text_input("メールアドレス")
         password = st.text_input("パスワード", type="password")
+        success = False  # 初期化
         if st.button("ログイン"):
-            login_user(email)
+            success=login_user(email) # 成否を格納
             if success:
                 st.session_state["user"] = {"email": email, "uid": auth.get_user_by_email(email).uid}
                 st.sidebar.success(f"ログイン中: {email}")
