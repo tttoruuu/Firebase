@@ -4,10 +4,12 @@ import json
 
 # Firebaseの初期化
 def initialize_firebase():
-    # Streamlit SecretsからFirebaseサービスアカウントキーを取得
-    firebase_secrets = dict(st.secrets["firebase"])  # dict型に変換
-    cred = credentials.Certificate(firebase_secrets)
-    initialize_app(cred)
+    if not initialize_app._apps:  # Firebaseアプリが初期化されていない場合のみ実行
+        # Streamlit SecretsからFirebaseサービスアカウントキーを取得
+        firebase_secrets = dict(st.secrets["firebase"])  # dict型に変換
+        cred = credentials.Certificate(firebase_secrets)
+        initialize_app(cred)
+
     return firestore.client()
 
 db = initialize_firebase()
