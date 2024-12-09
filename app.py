@@ -1,10 +1,10 @@
 import streamlit as st
 from firebase_admin import credentials, initialize_app, auth, firestore
-import json
+import firebase_admin
 
 # Firebaseの初期化
 def initialize_firebase():
-    if not initialize_app._apps:  # Firebaseアプリが初期化されていない場合のみ実行
+    if not firebase_admin._apps:  # Firebaseアプリが初期化されていない場合のみ実行
         # Streamlit SecretsからFirebaseサービスアカウントキーを取得
         firebase_secrets = dict(st.secrets["firebase"])  # dict型に変換
         cred = credentials.Certificate(firebase_secrets)
