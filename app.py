@@ -1,13 +1,16 @@
 import streamlit as st
-from firebase_admin import credentials, initialize_app, auth
+from firebase_admin import credentials, initialize_app, auth, firestore
 import json
 
 # Firebaseの初期化
 def initialize_firebase():
-    # StreamlitのSecretsからFirebaseサービスアカウントキーを取得
-    firebase_secrets = dict(st.secrets["firebase"])
+    # Streamlit SecretsからFirebaseサービスアカウントキーを取得
+    firebase_secrets = dict(st.secrets["firebase"])  # dict型に変換
     cred = credentials.Certificate(firebase_secrets)
     initialize_app(cred)
+    return firestore.client()
+
+db = initialize_firebase()
 
 # ユーザー登録
 def register_user(email, password):
@@ -18,13 +21,36 @@ def register_user(email, password):
     except Exception as e:
         st.error(f"ユーザー登録中にエラーが発生しました: {e}")
 
-# ログイン（認証用トークン生成）
-def login_user(email, password):
+# ログイン（仮のセッション管理）
+def login_user(email):
     try:
-        # Firebase Authenticationはサーバーサイドでパスワードを確認するAPIがないため、フロント側でFirebase SDKを利用
-        st.warning("ログインはクライアントサイドのFirebase SDKが必要です（例：JavaScriptで実装）")
+        user = auth.get_user_by_email(email)
+        st.session_state["user"] = {"email": user.email, "uid": user.uid}
+        st.success(f"ようこそ、{email} さん！")
+        return True
     except Exception as e:
         st.error(f"ログイン中にエラーが発生しました: {e}")
+        return False
+
+# Firestoreにデータを保存
+def save_user_data(uid, mbti, habit_goal):
+    try:
+        user_ref = db.collection("users").document(uid)
+        user_ref.set({"mbti": mbti, "habit_goal": habit_goal})
+        st.success("データが保存されました！")
+    except Exception as e:
+        st.error(f"データ保存中にエラーが発生しました: {e}")
+
+# ユーザー情報入力ページ
+def user_dashboard():
+    st.title("ユーザー情報を入力")
+    uid = st.session_state["user"]["uid"]
+
+    mbti = st.selectbox("あなたのMBTIを選択してください", ["ENFP", "INTJ", "INFJ", "ENTP", "その他"])
+    habit_goal = st.text_input("習慣化したいことを入力してください")
+
+    if st.button("保存"):
+        save_user_data(uid, mbti, habit_goal)
 
 # Streamlit UI
 def app():
@@ -34,6 +60,12 @@ def app():
     if "firebase_initialized" not in st.session_state:
         initialize_firebase()
         st.session_state["firebase_initialized"] = True
+
+    # ログインセッション確認
+    if "user" in st.session_state:
+        st.sidebar.success(f"ログイン中: {st.session_state['user']['email']}")
+        user_dashboard()
+        return
 
     # タブで登録とログインを切り替える
     mode = st.radio("選択してください", ["ログイン", "新規登録"])
@@ -50,7 +82,8 @@ def app():
         email = st.text_input("メールアドレス")
         password = st.text_input("パスワード", type="password")
         if st.button("ログイン"):
-            login_user(email, password)
+            if login_user(email):
+                st.experimental_rerun()  # ページを再読み込みしてログイン状態を反映
 
 # アプリの起動
 if __name__ == "__main__":
