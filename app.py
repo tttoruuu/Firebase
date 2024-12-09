@@ -84,7 +84,7 @@ def app():
         email = st.text_input("メールアドレス")
         password = st.text_input("パスワード", type="password")
         if st.button("ログイン"):
-            login_user(email):
+            login_user(email)
             if success:
                 st.session_state["user"] = {"email": email, "uid": auth.get_user_by_email(email).uid}
                 st.sidebar.success(f"ログイン中: {email}")
