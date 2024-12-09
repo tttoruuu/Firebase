@@ -5,7 +5,7 @@ import json
 # Firebaseの初期化
 def initialize_firebase():
     # StreamlitのSecretsからFirebaseサービスアカウントキーを取得
-    firebase_secrets = json.loads(st.secrets["firebase"])
+    firebase_secrets = st.secrets["firebase"]
     cred = credentials.Certificate(firebase_secrets)
     initialize_app(cred)
 
