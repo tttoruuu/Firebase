@@ -4,23 +4,24 @@ from firebase_admin import credentials, initialize_app, firestore, auth
 import firebase_admin
 from dotenv import load_dotenv
 
+# ローカル環境のみdotenvを使用
+if os.path.exists(".env"):
+    from dotenv import load_dotenv
+    load_dotenv()  # .env ファイルを読み込む
+
 # Firebaseの初期化
 def initialize_firebase():
-    # Firebaseが初期化されていない場合のみ実行
     if not firebase_admin._apps:
-        load_dotenv()  # .env ファイルを読み込む
-
-        # 環境変数からFirebaseキーのパスを取得
         firebase_key_path = os.getenv("FIREBASE_LOCAL_KEY")
         if firebase_key_path and os.path.exists(firebase_key_path):
             # ローカル環境
             cred = credentials.Certificate(firebase_key_path)
-        elif os.path.exists(".streamlit/secrets.toml"):
+        elif "firebase" in st.secrets:
             # デプロイ環境
             firebase_secrets = dict(st.secrets["firebase"])
             cred = credentials.Certificate(firebase_secrets)
         else:
-            raise FileNotFoundError("Firebaseのキー情報が見つかりません。secrets.toml または .env を設定してください。")
+            raise FileNotFoundError("Firebaseのキー情報が見つかりません。")
 
         initialize_app(cred)
 
