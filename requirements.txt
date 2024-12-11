@@ -1,3 +1,7 @@
 streamlit>=1.40.0   # Streamlitアプリケーションフレームワーク
 firebase-admin
 python-dotenv
+pandas
+altair
+openai>=1.50.0
+Pillow

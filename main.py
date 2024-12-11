@@ -16,6 +16,12 @@ if os.path.exists(".env"):
     load_dotenv()
 
 
+#ここでfirebaseの環境設定
+if "firebase_initialized" not in st.session_state:
+    initialize_firebase()
+    st.session_state["firebase_initialized"] = True
+
+
 def app():
     # サイドバーでページを選択
     st.sidebar.title("ナビゲーション")
@@ -39,10 +45,7 @@ def app():
     image = Image.open("ゆきだまちゃん.png")
     st.image(image, width=300)
 
-    #ここでfirebaseの環境設定
-    if "firebase_initialized" not in st.session_state:
-        initialize_firebase()
-        st.session_state["firebase_initialized"] = True
+ 
 
     #ログイン成功の場合に左端に「ログイン中」→ユーザー設定画面
     if "user" in st.session_state:
