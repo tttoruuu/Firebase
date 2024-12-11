@@ -5,7 +5,8 @@ import openai
 import os
 
 # Streamlit SecretsからAPIキーを取得
-OpenAI.api_key = st.secrets[openai]["OPENAI_API_KEY"]
+api_key = st.secrets[openai]
+client =OpenAI(api_key=api_key)
 
 def switch_page(page_name):
     st.session_state["current_page"] = page_name
