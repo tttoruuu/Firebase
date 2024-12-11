@@ -26,7 +26,7 @@ db = initialize_firebase()
 
 def app():
     # サイドバーでページを選択
-    st.sidebar.title("ナビゲーション")
+    st.sidebar.title("ナビゲーション1")
     page = st.sidebar.radio("ページを選択してください", ["ログイン", "ユーザー情報入力", "トレーニング", "成果"])
 
      # セッション状態に基づいてページを表示
