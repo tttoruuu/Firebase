@@ -2,6 +2,12 @@ from firebase import db
 import streamlit as st
 from openai import OpenAI
 import openai
+import os
+
+# OpenAI APIのキーを環境変数から取得
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),  
+)
 
 def switch_page(page_name):
     st.session_state["current_page"] = page_name
@@ -15,11 +21,12 @@ def training_page():
         availabletime = str(st.slider("今日使える時間(分)", 5,120,360))    
         submit_btn = st.form_submit_button(label="登録")
 
-      # Firestore のデータを取得して表示
+    # Firestore のデータを取得して表示
     name = user_data.get("name")
     mbti = user_data.get("mbti")
     KeystoneHabits = user_data.get("habit_goal")
     
+    #ボタンが押されたら
     if submit_btn:
         st.text(f"ようこそ！{name}さん！") 
         st.text(f"{name}さんのやりたいことを応援するね！")
