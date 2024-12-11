@@ -21,6 +21,8 @@ if "firebase_initialized" not in st.session_state:
     initialize_firebase()
     st.session_state["firebase_initialized"] = True
 
+# Firebase の初期化を最初に実行
+db = initialize_firebase()
 
 def app():
     # サイドバーでページを選択
